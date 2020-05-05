@@ -29,5 +29,6 @@ function [M0Update, MMatsUpdate] = pos_def_update(M0, MMats)
         else
             MMatsUpdate(:,:,i) = nearest_SPD(MMats(:,:,i));
         end
+    end
     
 end % of the function

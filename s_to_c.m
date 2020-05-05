@@ -13,7 +13,7 @@ function [C0, CMats, rhos] = s_to_c(S0, SMats, lambdas, coeffSize)
     % lambdas : Vector
     %     Creep time constants
     % coeffSize : int
-    %     The size dim of the the matrix i.e. 6 if 6x6
+    %     The size dim of the the matrix i.e. 6 for 6x6
     %
     % Returns
     % -------
@@ -38,12 +38,9 @@ function [C0, CMats, rhos] = s_to_c(S0, SMats, lambdas, coeffSize)
     for i = 1:numCoeff
         tempMat = lambdas(i) * SMats(:,:,i);
         tempMat = chol(tempMat);
-        A2 = [A2, tempMat];
+        A2 = [A2, tempMat'];
 
     end
-     
-    A2 = A2';
-    
     
     A3 = eye(finalNumCoeff);
     A3Lambdas = repelem(lambdas, coeffSize);
