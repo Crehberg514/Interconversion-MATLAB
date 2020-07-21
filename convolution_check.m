@@ -1,35 +1,45 @@
 function convolution = convolution_check(C0, CMats, rhos, S0, SMats, lambdas, t)
-    % Checks the convolution intergral of the C(t) and S(t) matrices.
-    % Should be the identiy matrix of t*I
-    % Also returns the errors from scipy.quad intergration
+    % Checks the convolution integral of the C(t) and S(t) matrices.
+    % 
+    % Performs the numerical convolution integration of the creep and
+    % relaxation material functions, using the integral function. The returned
+    % matrix of the time convolution is an array of the elements of the columns
+    % are added together. While, if computed by hand, would be an idenity
+    % matrix multiplied by the given time.
     %
     % Parameters
     % ----------
     % C0 : 2D matrix
-    %     Equilibrium relaxation
+    %     The equilibrium relaxation in a 2D array.
     % CMats : 3D matrix
-    %     Relaxtion modulus coefficient
+    %     The relaxation modulus coefficient matrices in a 3D array. The third
+    %     dimension is to access the matrix, while the first and second are the
+    %     rows and columns.
     % rhos : 1D array
-    %     Relaxation time constants
+    %     The inverted relaxation time constants in a 1D array, in descending
+    %     order.
     % S0 : 2D matrix
-    %     Instantaneous creep modulus
+    %     The instantaneous creep modulus in a 2D array.
     % SMats : 3D matrix
-    %     Creep modulus coefficient
+    %     The creep modulus coefficient matrices in a 3D array. The third
+    %     dimension is to access the matrix, while the first and second are the
+    %     rows and columns.
     % lambdas : 1D array
-    %     Creep time constants
+    %     The inverted creep time constants in a 1D numpy array, in descending
+    %     order.
     % t : float
-    %     time
+    %     The time at which to calculate the convolution.
     % 
     % Returns
     % -------
-    % convolution : 2D matrix
-    %     Matrix of the convolution of C(t) and S(t)
+    % convolution : 1D array
+    %     An array of the convolution matrix for C(t) and S(t).
     
-    C = @(time) modulus_at_time(C0, CMats, rhos, time, 'relax');
-    S = @(time) modulus_at_time(S0, SMats, lambdas, time, 'creep');
+    C = @(time) relax_modulus(C0, CMats, rhos, time);
+    S = @(time) creep_modulus(S0, SMats, lambdas, time);
     
     f  = @(tau, t) dot(C(t - tau), S(tau));
     
     convolution = integral(@(tau) f(tau, t), 0, t, 'ArrayValued', true);
-    % Statements here; these must include putting a value in the output argument
+    
     end % of the function

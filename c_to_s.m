@@ -1,37 +1,53 @@
-function [S0, SMats, lambdas] = c_to_s(C0, CMats, rhos, coeffSize)
-    % Converts prony series creep complance to relaxtion modulus
-    % using Cholesky decomposition. Using algorithm 3 of "Interconversion of
-    % linearly viscoelastic material functions expressed as Prony series"
+function [S0, SMats, lambdas] = c_to_s(C0, CMats, rhos)
+    % Convert a prony series relaxation modulus to creep compliance.
     %
+    % MATLAB numerical implementation of algorithm 3 from "Interconversion of
+    % linearly viscoelastic material functions expressed as Prony series"[1].
+    % Requiring the equilibrium relaxation modulus, the relaxation coefficient
+    % modulus matrices, the inverted time series, and finally the size of the
+    % square matrices.
+    %
+    % This version is of the algorithm is not limited to 6 by 6 matrices, but
+    % has been minimally adjusted to accept any square matrices.
     %
     % Parameters
-    % ----------
+    %----------
     % C0 : 2D matrix
-    %     Equilibrium relaxation
+    %     The equilibrium relaxation modulus as a 2D square array.
     % CMats : 3D matrix
-    %     Relaxtion modulus coefficient
+    %     The relaxation modulus coefficients as a 3D array, with the third
+    %     dimension being the coefficient matrices and the first and second
+    %     being the row and columns respectfully.
     % rhos : Vector
     %     Relaxation time constants
-    % coeffSize : int
-    %     The size dim of the the matrix i.e. 6 if 6x6
     %
     % Returns
     % -------
     % S0 : 2D matrix
-    %     Instantaneous creep modulus
+    %     The instantaneous creep modulus returned as a 2D square array.
     % SMats : 3D matrix
-    %     Creep modulus coefficient
+    %     The creep modulus coefficient returned as a 3D array, with the third
+    %     dimension being the coefficient matrices and the first and second
+    %     being the row and columns respectfully.
     % lambdas : Vector
-    %     Creep time constants
+    %     The inverted creep time constants in a 1D array.
+    %
+    % References
+    % ----------
+    % [1] Luk-Cyr, J., Crochon, T., Li, C. et al. Interconversion of linearly
+    % viscoelastic material functions expressed as Prony series: a closure.
+    % Mech Time-Depend Mater 17, 53–82 (2013). 
+    % https://doi.org/10.1007/s11043-012-9176-y
+    
 
-    % Number of coefficent matrices
-    [~, ~, numCoeff] = size(CMats);
+    % Find the size of the square matrix and the number of coefficent matrices
+    [~, coeffSize, numCoeff] = size(CMats);
 
-    % Final amount of coefficient matrices returned
-    % used to size different variables
+    % Calculate amount of coefficient matrices created
     finalNumCoeff = coeffSize * numCoeff;
 
-    L1 = zeros(6);
+    % Follow the steps outlined in Algorithm 3 from [1]
+    L1 = zeros(coeffSize);
     
     L1 = L1 + C0;
     
@@ -80,7 +96,5 @@ function [S0, SMats, lambdas] = c_to_s(C0, CMats, rhos, coeffSize)
         end
         lambdas(m) = A3Star(m,m) / B(m,m);
     end
-    
-    lambdas = fliplr(lambdas);
-    
+      
     end % of the function

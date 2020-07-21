@@ -1,36 +1,46 @@
-function [C0, CMats, rhos] = s_to_c(S0, SMats, lambdas, coeffSize)
-    % Converts prony series creep complance to relaxtion modulus
-    % using Cholesky decomposition. Using algorithm 4 of "Interconversion of
-    % linearly viscoelastic material functions expressed as Prony series"
+function [C0, CMats, rhos] = s_to_c(S0, SMats, lambdas)
+    % Convert a prony series creep compliance to relaxation modulus.
     %
+    % MATLAB numerical implementation of algorithm 4 from "Interconversion of
+    % linearly viscoelastic material functions expressed as Prony series"[1].
+    % Requiring the instantaneous creep modulus, the matrix creep coefficient
+    % modulus, the inverted time series, and finally the size of the square
+    % matrices.
+    %
+    % This version is of the algorithm is not limited to 6 by 6 matrices, but
+    % has been minimally adjusted to accept any square matrices.
     %
     % Parameters
     % ----------
     % S0 : 2D matrix
-    %     Instantaneous creep modulus
+    %     The instantaneous creep modulus as a 2D square array.
     % SMats : 3D matrix
-    %     Creep modulus coefficient
+    %     The creep modulus coefficient as a 3D array, with the third dimension
+    %     being the coefficient matrices and the first and second being the row
+    %     and columns respectfully.
     % lambdas : Vector
-    %     Creep time constants
-    % coeffSize : int
-    %     The size dim of the the matrix i.e. 6 for 6x6
+    %     The inverted creep time constants in a 1D array, in descending
+    %     order.
     %
     % Returns
     % -------
     % C0 : 2D matrix
-    %     Equilibrium relaxation
+    %     The equilibrium relaxation modulus returned as a 2D square array.
     % CMats : 3D matrix
-    %     Relaxtion modulus coefficient
+    %     The relaxation modulus coefficients returned as a 3D array, with the
+    %     third dimension being the coefficient matrices and the first and
+    %     second and being the row and columns respectfully.
     % rhos : Vector
-    %     Relaxation time constants
+    %     The inverted relaxation time constants in a 1D array.
     
-    % Number of coefficent matrices
-    [~, ~, numCoeff] = size(SMats);
+    
+    % Find the size of the square matrix and the number of coefficent matrices
+    [~, coeffSize, numCoeff] = size(SMats);
 
-    % Final amount of coefficient matrices returned
-    % used to size different variables
+    % Calculate amount of coefficient matrices created
     finalNumCoeff = coeffSize * numCoeff;
 
+    % Follow the steps outlined in Algorithm 4 from [1]
     A1 = S0;
 
     A2 = [];
