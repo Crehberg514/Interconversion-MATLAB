@@ -10,7 +10,7 @@ function convolution = convolution_check(C0, CMats, rhos, S0, SMats, lambdas, t)
     % Parameters
     % ----------
     % C0 : 2D matrix
-    %     The equilibrium relaxation in a 2D array.
+    %     The equilibrium relaxation matrix in a 2D array.
     % CMats : 3D matrix
     %     The relaxation modulus coefficient matrices in a 3D array. The third
     %     dimension is to access the matrix, while the first and second are the
@@ -19,7 +19,7 @@ function convolution = convolution_check(C0, CMats, rhos, S0, SMats, lambdas, t)
     %     The inverted relaxation time constants in a 1D array, in descending
     %     order.
     % S0 : 2D matrix
-    %     The instantaneous creep modulus in a 2D array.
+    %     The instantaneous creep matrix in a 2D array.
     % SMats : 3D matrix
     %     The creep modulus coefficient matrices in a 3D array. The third
     %     dimension is to access the matrix, while the first and second are the
